@@ -98,10 +98,7 @@ function setMainShape(shapeName) {
 
   // Solo ejecutar el callback cuando hay un cambio real de forma
   if (previousShape !== currentShape && onShapeCreatedCallback) {
-    onShapeCreatedCallback({ 
-      tipo: 'A', 
-      timestamp: Date.now() 
-    });
+    onShapeCreatedCallback('A');
   }
 }
 
