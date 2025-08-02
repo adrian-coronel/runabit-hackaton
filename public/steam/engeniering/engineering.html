@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runabit Engineering - Laboratorio de Ingeniería</title>
+    <link rel="stylesheet" href="engineering-styles.css">
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Laboratorio Virtual de Ingeniería">
+    <meta name="description" content="Construye estructuras y circuitos usando gestos de manos">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header con información del proyecto actual -->
+    <header id="project-header">
+        <div class="header-content">
+            <h1 id="project-question">¿Puedes construir una torre estable?</h1>
+            <div class="project-counter">
+                <span id="current-project">1</span> / <span id="total-projects">2</span>
+            </div>
+            <div class="activity-selector">
+                <button id="structures-btn" class="activity-btn active">🏗️ Estructuras</button>
+                <button id="circuits-btn" class="activity-btn">⚡ Circuitos</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Webcam y canvas para detección de gestos -->
+    <video id="webcam" autoplay playsinline muted></video>
+    <canvas id="gesture-canvas"></canvas>
+
+    <!-- Área principal de construcción 3D -->
+    <div id="construction-area">
+        <canvas id="three-canvas"></canvas>
+        
+        <!-- Indicadores de estado de construcción -->
+        <div id="construction-status">
+            <div class="status-item">
+                <span class="status-label">Estabilidad:</span>
+                <div class="stability-bar">
+                    <div id="stability-fill" class="stability-fill"></div>
+                </div>
+                <span id="stability-text">0%</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Bloques usados:</span>
+                <span id="blocks-count">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel lateral con herramientas y componentes -->
+    <div id="toolbox">
+        <!-- Para construcción de estructuras -->
+        <div id="blocks-panel" class="tool-panel active">
+            <h3>🧱 Bloques de Construcción</h3>
+            <div class="blocks-grid">
+                <div class="block-item" data-block="cube">
+                    <div class="block-preview cube-preview"></div>
+                    <span>Cubo</span>
+                </div>
+                <div class="block-item" data-block="brick">
+                    <div class="block-preview brick-preview"></div>
+                    <span>Ladrillo</span>
+                </div>
+                <div class="block-item" data-block="beam">
+                    <div class="block-preview beam-preview"></div>
+                    <span>Viga</span>
+                </div>
+                <div class="block-item" data-block="plate">
+                    <div class="block-preview plate-preview"></div>
+                    <span>Placa</span>
+                </div>
+                <div class="block-item" data-block="triangle">
+                    <div class="block-preview triangle-preview"></div>
+                    <span>Triángulo</span>
+                </div>
+                <div class="block-item" data-block="cylinder">
+                    <div class="block-preview cylinder-preview"></div>
+                    <span>Cilindro</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Para circuitos eléctricos -->
+        <div id="components-panel" class="tool-panel">
+            <h3>⚡ Componentes Eléctricos</h3>
+            <div class="components-grid">
+                <div class="component-item" data-component="battery">
+                    <div class="component-preview battery-preview"></div>
+                    <span>Batería</span>
+                </div>
+                <div class="component-item" data-component="bulb">
+                    <div class="component-preview bulb-preview"></div>
+                    <span>Bombilla</span>
+                </div>
+                <div class="component-item" data-component="switch">
+                    <div class="component-preview switch-preview"></div>
+                    <span>Interruptor</span>
+                </div>
+                <div class="component-item" data-component="wire">
+                    <div class="component-preview wire-preview"></div>
+                    <span>Cable</span>
+                </div>
+                <div class="component-item" data-component="motor">
+                    <div class="component-preview motor-preview"></div>
+                    <span>Motor</span>
+                </div>
+                <div class="component-item" data-component="resistor">
+                    <div class="component-preview resistor-preview"></div>
+                    <span>Resistencia</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área de desafíos activos -->
+    <div id="challenge-panel">
+        <div class="challenge-content">
+            <h3 id="challenge-title">🏗️ Desafío: Torre Estable</h3>
+            <p id="challenge-description">Construye una torre de al menos 5 bloques de altura que sea estable y no se caiga.</p>
+            <div class="challenge-requirements">
+                <div class="requirement" id="height-req">
+                    <span class="req-icon">📏</span>
+                    <span class="req-text">Altura mínima: 5 bloques</span>
+                    <span class="req-status">❌</span>
+                </div>
+                <div class="requirement" id="stability-req">
+                    <span class="req-icon">⚖️</span>
+                    <span class="req-text">Estabilidad > 70%</span>
+                    <span class="req-status">❌</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicadores de gestos -->
+    <div id="gesture-indicators">
+        <div class="gesture-indicator" id="hand-detected">
+            <span class="indicator-icon">👋</span>
+            <span class="indicator-text">Mano detectada</span>
+        </div>
+        <div class="gesture-indicator" id="pinch-gesture">
+            <span class="indicator-icon">🤏</span>
+            <span class="indicator-text">Gesto de pinza</span>
+        </div>
+        <div class="gesture-indicator" id="drag-gesture">
+            <span class="indicator-icon">👆</span>
+            <span class="indicator-text">Arrastrando</span>
+        </div>
+    </div>
+
+    <!-- Contenedor del robot -->
+    <div id="robot-container"></div>
+
+    <!-- Panel de resultados -->
+    <div id="result-overlay" class="hidden">
+        <div class="result-visual">
+            <div class="result-animation" id="result-animation">🎉</div>
+            <h3 id="result-title">¡Desafío Completado!</h3>
+            <p id="result-explanation">Tu estructura es estable y cumple todos los requisitos.</p>
+        </div>
+    </div>
+
+    <!-- Indicador de carga -->
+    <div id="loading-indicator">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3>Inicializando Laboratorio de Ingeniería...</h3>
+            <p id="loading-status">Preparando componentes...</p>
+        </div>
+    </div>
+
+    <!-- Panel de ayuda -->
+    <div id="help-panel" class="hidden">
+        <div class="help-content">
+            <h3>🚀 Cómo usar el Laboratorio de Ingeniería</h3>
+            <ul>
+                <li>🎯 <strong>Selecciona</strong> una actividad: Estructuras o Circuitos</li>
+                <li>🤏 Usa <strong>pinch</strong> con pulgar e índice para tomar componentes</li>
+                <li>🫱 <strong>Arrastra</strong> hacia el área de construcción</li>
+                <li>🔧 Construye siguiendo los desafíos propuestos</li>
+                <li>📊 Observa las métricas de estabilidad en tiempo real</li>
+                <li>🤖 El robot te guiará y explicará los conceptos</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Botón de ayuda -->
+    <button id="help-button" class="help-btn">?</button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- Módulos principales -->
+    <script type="module" src="engineering-main.js"></script>
+    <script type="module" src="engineering-structures.js"></script>
+    <script type="module" src="engineering-circuits.js"></script>
+    <script type="module" src="engineering-gestures.js"></script>
+    <script type="module" src="engineering-physics.js"></script>
+</body>
+</html>

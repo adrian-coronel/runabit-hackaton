@@ -1,0 +1,723 @@
+/* ========== ENGINEERING STYLES - Laboratorio de Ingeniería STEAM ========== */
+
+/* Variables CSS para tema de ingeniería */
+:root {
+    --primary-color: #2196F3;
+    --secondary-color: #FFC107;
+    --success-color: #4CAF50;
+    --warning-color: #FF9800;
+    --error-color: #F44336;
+    --dark-bg: #1a1a1a;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --text-light: rgba(255, 255, 255, 0.9);
+    --text-dim: rgba(255, 255, 255, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.2);
+    --shadow-depth: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== RESET Y BASE ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: var(--text-light);
+    overflow: hidden;
+    position: relative;
+    height: 100vh;
+}
+
+/* ========== HEADER ========== */
+#project-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(33, 150, 243, 0.15);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--border-glass);
+    z-index: 100;
+    padding: 15px 20px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#project-header h1 {
+    font-family: 'Bitcount Prop Single', monospace;
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.project-counter {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    background: var(--glass-bg);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border-glass);
+}
+
+.activity-selector {
+    display: flex;
+    gap: 10px;
+}
+
+.activity-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--border-glass);
+    color: var(--text-light);
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+}
+
+.activity-btn:hover {
+    background: rgba(33, 150, 243, 0.3);
+    transform: translateY(-2px);
+}
+
+.activity-btn.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: var(--shadow-depth);
+}
+
+/* ========== WEBCAM Y CANVAS ========== */
+#webcam {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+    /* Remover transform: scaleX(-1) para evitar confusión con gestos */
+    opacity: 0.3;
+}
+
+#gesture-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ========== ÁREA DE CONSTRUCCIÓN 3D ========== */
+#construction-area {
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    right: 300px;
+    bottom: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    border: 2px solid var(--border-glass);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+#three-canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 13px;
+}
+
+#construction-status {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: var(--glass-bg);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(15px);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.status-item:last-child {
+    margin-bottom: 0;
+}
+
+.status-label {
+    font-weight: 600;
+    min-width: 100px;
+}
+
+.stability-bar {
+    flex: 1;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border-glass);
+}
+
+.stability-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--error-color), var(--warning-color), var(--success-color));
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+#blocks-count {
+    font-weight: bold;
+    color: var(--secondary-color);
+    min-width: 30px;
+}
+
+/* ========== PANEL DE HERRAMIENTAS ========== */
+#toolbox {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 260px;
+    bottom: 20px;
+    background: var(--glass-bg);
+    border-radius: 15px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.tool-panel {
+    display: none;
+}
+
+.tool-panel.active {
+    display: block;
+}
+
+.tool-panel h3 {
+    font-family: 'Bitcount Prop Single', monospace;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.blocks-grid,
+.components-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.block-item,
+.component-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-glass);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.block-item:hover,
+.component-item:hover {
+    background: rgba(33, 150, 243, 0.2);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-depth);
+}
+
+.block-item.selected,
+.component-item.selected {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+.block-preview,
+.component-preview {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* Previews específicos para bloques */
+.cube-preview {
+    background: linear-gradient(45deg, #8BC34A, #4CAF50);
+}
+
+.brick-preview {
+    background: linear-gradient(45deg, #FF5722, #D84315);
+}
+
+.beam-preview {
+    background: linear-gradient(45deg, #795548, #5D4037);
+}
+
+.plate-preview {
+    background: linear-gradient(45deg, #9E9E9E, #616161);
+}
+
+.triangle-preview {
+    background: linear-gradient(45deg, #E91E63, #C2185B);
+}
+
+.cylinder-preview {
+    background: linear-gradient(45deg, #3F51B5, #303F9F);
+    border-radius: 50%;
+}
+
+/* Previews específicos para componentes */
+.battery-preview {
+    background: linear-gradient(45deg, #FFC107, #FF8F00);
+}
+
+.battery-preview::before {
+    content: '+';
+    color: white;
+    font-weight: bold;
+}
+
+.bulb-preview {
+    background: linear-gradient(45deg, #FFEB3B, #F57F17);
+    border-radius: 50%;
+}
+
+.bulb-preview::before {
+    content: '💡';
+}
+
+.switch-preview {
+    background: linear-gradient(45deg, #607D8B, #455A64);
+}
+
+.switch-preview::before {
+    content: '⏻';
+    color: white;
+}
+
+.wire-preview {
+    background: linear-gradient(45deg, #4CAF50, #388E3C);
+}
+
+.wire-preview::before {
+    content: '〰️';
+}
+
+.motor-preview {
+    background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+    border-radius: 50%;
+}
+
+.motor-preview::before {
+    content: '⚙️';
+}
+
+.resistor-preview {
+    background: linear-gradient(45deg, #795548, #5D4037);
+}
+
+.resistor-preview::before {
+    content: '🔧';
+}
+
+/* ========== PANEL DE DESAFÍOS ========== */
+#challenge-panel {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 400px;
+    background: var(--glass-bg);
+    border-radius: 15px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+}
+
+.challenge-content h3 {
+    font-family: 'Bitcount Prop Single', monospace;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.challenge-content p {
+    color: var(--text-dim);
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.challenge-requirements {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.requirement {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid var(--border-glass);
+}
+
+.req-icon {
+    font-size: 1.2rem;
+}
+
+.req-text {
+    flex: 1;
+    font-size: 0.9rem;
+}
+
+.req-status {
+    font-size: 1.1rem;
+}
+
+.requirement.completed {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: var(--success-color);
+}
+
+.requirement.completed .req-status {
+    color: var(--success-color);
+}
+
+/* ========== INDICADORES DE GESTOS ========== */
+#gesture-indicators {
+    position: fixed;
+    top: 120px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 50;
+}
+
+.gesture-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-glass);
+    border-radius: 25px;
+    padding: 8px 15px;
+    backdrop-filter: blur(15px);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.gesture-indicator.active {
+    opacity: 1;
+    background: rgba(33, 150, 243, 0.3);
+    transform: scale(1.05);
+}
+
+.indicator-icon {
+    font-size: 1.2rem;
+}
+
+.indicator-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ========== CONTENEDOR DEL ROBOT ========== */
+#robot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 300px;
+    width: 120px;
+    height: 120px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* ========== OVERLAY DE RESULTADOS ========== */
+#result-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 200;
+    pointer-events: none;
+    transition: all 0.5s ease;
+}
+
+#result-overlay.hidden {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+}
+
+.result-visual {
+    background: linear-gradient(145deg, rgba(33, 150, 243, 0.95), rgba(21, 101, 192, 0.95));
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    border: 2px solid var(--border-glass);
+    box-shadow: var(--shadow-depth);
+    min-width: 300px;
+}
+
+.result-visual .result-animation {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    background: var(--glass-bg);
+    border: 2px solid var(--border-glass);
+}
+
+.result-visual h3 {
+    font-family: 'Bitcount Prop Single', monospace;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+}
+
+.result-visual p {
+    line-height: 1.5;
+    color: var(--text-light);
+}
+
+/* ========== INDICADOR DE CARGA ========== */
+#loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-content {
+    text-align: center;
+    background: var(--glass-bg);
+    border-radius: 20px;
+    padding: 40px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(15px);
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-content h3 {
+    font-family: 'Bitcount Prop Single', monospace;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+/* ========== PANEL DE AYUDA ========== */
+#help-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--glass-bg);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(15px);
+    z-index: 150;
+    max-width: 500px;
+    box-shadow: var(--shadow-depth);
+    transition: all 0.3s ease;
+}
+
+#help-panel.hidden {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+    pointer-events: none;
+}
+
+.help-content h3 {
+    font-family: 'Bitcount Prop Single', monospace;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.help-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.help-content li {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid var(--border-glass);
+    line-height: 1.5;
+}
+
+.help-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: var(--shadow-depth);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.help-btn:hover {
+    transform: translateX(-50%) scale(1.1);
+    background: var(--secondary-color);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    #construction-area {
+        right: 20px;
+        bottom: 180px;
+    }
+    
+    #toolbox {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+        height: 140px;
+        top: auto;
+    }
+    
+    #challenge-panel {
+        width: calc(100% - 40px);
+        right: 20px;
+    }
+    
+    .blocks-grid,
+    .components-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+}
+
+/* ========== ANIMACIONES Y EFECTOS ========== */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+    }
+}
+
+.bounce {
+    animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+    0%, 20%, 60%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    80% {
+        transform: translateY(-5px);
+    }
+}
+
+/* ========== EFECTOS ESPECIALES ========== */
+.circuit-flow {
+    position: relative;
+    overflow: hidden;
+}
+
+.circuit-flow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 0, 0.5), transparent);
+    animation: flow 2s linear infinite;
+}
+
+@keyframes flow {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.stability-warning {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
