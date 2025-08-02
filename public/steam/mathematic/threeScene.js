@@ -456,11 +456,29 @@ export function animate() {
 
 // Actualiza el tamaño del canvas y la cámara al cambiar el tamaño de la ventana
 export function updateCanvasSize(canvasElement) {
-  canvasElement.width = window.innerWidth;
-  canvasElement.height = window.innerHeight;
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.aspect = window.innerWidth / window.innerHeight;
+  // Obtener dimensiones reales de la ventana
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  
+  // Actualizar canvas
+  canvasElement.width = width;
+  canvasElement.height = height;
+  
+  // Actualizar renderer
+  renderer.setSize(width, height);
+  
+  // Actualizar aspecto de la cámara
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
+  
+  // Ajustar FOV para dispositivos móviles
+  if (width < 768) {
+    camera.fov = width < height ? 85 : 70; // Portrait vs Landscape
+    camera.updateProjectionMatrix();
+  } else {
+    camera.fov = 75; // Valor por defecto para desktop
+    camera.updateProjectionMatrix();
+  }
 }
 
 // Exporta variables globales necesarias

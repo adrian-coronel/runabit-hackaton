@@ -5,7 +5,7 @@ import { initWebcam, setupHands } from "./webcam.js";
 // import { drawColorPickerWheel } from "./drawUtils.js";
 
 // Inicializar Socket.io
-const socket = io();
+// const socket = io();
 
 // Obtiene el elemento de video de la webcam
 const videoElement = document.getElementById("webcam");
@@ -18,7 +18,7 @@ const canvasCtx = canvasElement.getContext("2d");
 onShapeCreated((data) => {
   console.log("Forma creada:", data);
   // Aquí puedes emitir un evento a través de Socket.io
-  socket.emit("lenvantarceja", data);
+  // socket.emit("lenvantarceja", data);
 });
 
 // Función principal que inicializa todo
@@ -26,8 +26,17 @@ async function main() {
   await initWebcam(videoElement); // Inicializa la webcam
   initThree(); // Inicializa la escena 3D
   updateCanvasSize(canvasElement); // Ajusta el tamaño de los canvas
-  window.addEventListener("resize", () => updateCanvasSize(canvasElement)); // Actualiza el tamaño al cambiar la ventana
-  // drawColorPickerWheel(); // Dibuja la rueda de color
+  
+  // Actualizar al cambiar tamaño de ventana
+  window.addEventListener("resize", () => updateCanvasSize(canvasElement));
+  
+  // Actualizar al cambiar orientación en móviles
+  window.addEventListener("orientationchange", () => {
+    setTimeout(() => {
+      updateCanvasSize(canvasElement);
+    }, 100);
+  });
+  
   setupHands(canvasElement, canvasCtx, videoElement); // Inicializa MediaPipe Hands
 }
 

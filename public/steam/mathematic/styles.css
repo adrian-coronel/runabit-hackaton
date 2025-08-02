@@ -7,6 +7,7 @@ body, html {
   background: black;
   font-family: "Bitcount Prop Single", system-ui;
 }
+
 #webcam, #three-canvas, #canvas {
   position: absolute;
   top: 0;
@@ -14,19 +15,23 @@ body, html {
   width: 100%;
   height: 100%;
 }
+
 #webcam {
   transform: scaleX(-1);
   object-fit: cover;
   z-index: 0;
 }
+
 #canvas {
   transform: scaleX(-1);
   z-index: 11;
 }
+
 #three-canvas {
   z-index: 2;
   pointer-events: none;
 }
+
 #color-control {
   position: absolute;
   top: 30px;
@@ -35,18 +40,18 @@ body, html {
 }
 
 a {
-    color: #0000FF !important;
+  color: #0000FF !important;
 }
 
-#links-para{
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    font-family: Helvetica, sans-serif;
-    font-size: 16px;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 10px;
-    z-index:1000;
+#links-para {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  font-family: Helvetica, sans-serif;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  z-index: 1000;
 }
 
 #coffee-link {
@@ -57,22 +62,21 @@ a {
   font-size: 16px;
   background-color: rgba(255, 255, 255, 0.9);
   padding: 10px;
-  z-index:1000;
+  z-index: 1000;
 }
 
-
-/* SIDEBAR */
+/* SIDEBAR - Responsive Design */
 #sidebar-menu {
   position: fixed;
-  top: 50%; /* Posiciona en el centro vertical */
-  transform: translateY(-50%); /* Ajusta para centrar exactamente */
-  right: 40px;
-  width: 300px;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 20px;
+  width: 280px;
   height: auto;
   max-height: 80vh;
-  background: rgba(234, 234, 234, 0.65);
+  background: rgba(234, 234, 234, 0.85);
   color: #222;
-  padding: 20px 15px 25px;
+  padding: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
   z-index: 1000;
   border-radius: 16px;
@@ -87,18 +91,18 @@ a {
 /* Efecto de agua con animación sutil */
 @keyframes waterEffect {
   0%, 100% {
-    background: rgba(234, 234, 234, 0.65);
+    background: rgba(234, 234, 234, 0.85);
     box-shadow: 0 4px 15px rgba(0, 150, 255, 0.15);
   }
   50% {
-    background: rgba(220, 240, 255, 0.7);
+    background: rgba(220, 240, 255, 0.9);
     box-shadow: 0 4px 20px rgba(0, 150, 255, 0.25);
   }
 }
 
 #sidebar-menu h3 {
   margin: 0 0 15px;
-  font-size: 3em;
+  font-size: 2.5em;
   text-align: center;
   background: linear-gradient(45deg, #222, #444);
   -webkit-background-clip: text;
@@ -109,9 +113,17 @@ a {
 .shape-option {
   display: flex;
   align-items: center;
-  margin: 12px 0;
+  justify-content: flex-start;
+  margin: 10px 0;
   gap: 10px;
   width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.shape-option:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .shape-option canvas {
@@ -120,6 +132,7 @@ a {
   box-shadow: 0 1px 7px rgba(0,0,0,0.2);
   border: none;
   transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+  flex-shrink: 0;
 }
 
 .shape-option canvas.hover-effect {
@@ -128,27 +141,235 @@ a {
 }
 
 .shape-option span {
-  font-size: 1.5em;
+  font-size: 1.3em;
   color: #222;
+  font-weight: 500;
 }
 
 .shape-option.hover .shape-option span {
   font-weight: bold;
 }
 
-/* Robot flotante - Sin contenedor visible */
+/* Robot flotante - Responsive */
 #robot-container {
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-    width:400px;
-    height:400px;
-    z-index: 1000;
-    pointer-events: none; /* No bloquea clicks en la página */
+  position: fixed;
+  bottom: 50px;
+  left: 0px;
+  width: 300px;
+  height: 300px;
+  z-index: 1000;
+  pointer-events: none;
 }
 
 #robot-container canvas {
-    display: block;
-    background: transparent !important;
-    /* Sin bordes, sin sombras - Solo el robot */
+  display: block;
+  background: transparent !important;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablets en modo portrait */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  #sidebar-menu {
+    position: fixed;
+    bottom: 20px;
+    top: auto;
+    right: 50%;
+    transform: translateX(50%);
+    width: 90%;
+    max-width: 400px;
+    height: auto;
+    max-height: 40vh;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+    overflow-x: auto;
+  }
+
+  #sidebar-menu h3 {
+    display: none;
+  }
+
+  .shape-option {
+    flex-direction: column;
+    margin: 0 5px;
+    min-width: 80px;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .shape-option canvas {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .shape-option span {
+    font-size: 1em;
+    text-align: center;
+  }
+
+  #robot-container {
+    width: 200px;
+    height: 200px;
+  }
+
+  #links-para, #coffee-link {
+    font-size: 12px;
+    padding: 5px;
+  }
+}
+
+/* Tablets y móviles en modo landscape */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+  #sidebar-menu {
+    position: fixed;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px;
+    max-height: 90vh;
+    padding: 10px;
+  }
+
+  #sidebar-menu h3 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+  }
+
+  .shape-option {
+    margin: 8px 0;
+    gap: 8px;
+  }
+
+  .shape-option canvas {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .shape-option span {
+    font-size: 1.1em;
+  }
+
+  #robot-container {
+    width: 180px;
+    height: 180px;
+  }
+
+  #links-para, #coffee-link {
+    font-size: 12px;
+    padding: 5px;
+  }
+}
+
+/* Móviles pequeños en portrait */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+  #sidebar-menu {
+    bottom: 10px;
+    width: 95%;
+    padding: 8px;
+    max-height: 35vh;
+  }
+
+  .shape-option canvas {
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  .shape-option span {
+    font-size: 0.9em;
+  }
+
+  #robot-container {
+    width: 150px;
+    height: 150px;
+  }
+
+  #links-para, #coffee-link {
+    font-size: 10px;
+    padding: 3px;
+  }
+}
+
+/* Móviles pequeños en landscape */
+@media screen and (max-width: 768px) and (orientation: landscape) and (max-height: 500px) {
+  #sidebar-menu {
+    right: 5px;
+    width: 150px;
+    padding: 5px;
+    max-height: 95vh;
+  }
+
+  #sidebar-menu h3 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+  }
+
+  .shape-option {
+    margin: 5px 0;
+    gap: 5px;
+  }
+
+  .shape-option canvas {
+    width: 35px !important;
+    height: 35px !important;
+  }
+
+  .shape-option span {
+    font-size: 0.9em;
+  }
+
+  #robot-container {
+    width: 120px;
+    height: 120px;
+  }
+
+  #links-para {
+    bottom: 2px;
+    left: 2px;
+    font-size: 9px;
+    padding: 2px;
+  }
+
+  #coffee-link {
+    bottom: 2px;
+    right: 160px; /* Evitar solapamiento con sidebar */
+    font-size: 9px;
+    padding: 2px;
+  }
+}
+
+/* Pantallas muy pequeñas - fallback */
+@media screen and (max-width: 320px) {
+  #sidebar-menu {
+    width: 98%;
+    bottom: 5px;
+  }
+
+  .shape-option canvas {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .shape-option span {
+    font-size: 0.8em;
+  }
+
+  #robot-container {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Ajustes para pantallas touch */
+@media (hover: none) and (pointer: coarse) {
+  .shape-option {
+    padding: 12px 8px;
+    margin: 12px 0;
+  }
+
+  .shape-option canvas {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
 }
