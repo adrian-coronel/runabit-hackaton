@@ -107,11 +107,13 @@ export const CARDS = [
 // Array para almacenar las tarjetas 3D en la escena
 let cardMeshes = [];
 let selectedCard = null;
+let draggedCard = null;
 
 // Crear todas las tarjetas 3D en la escena
 export function createCards(scene) {
-  CARDS.forEach(cardData => {
+  CARDS.forEach((cardData, index) => {
     const card = createCard(cardData);
+    card.userData.index = index; // Añadir índice para identificación
     scene.add(card);
     cardMeshes.push(card);
   });
@@ -207,15 +209,43 @@ function createCard(cardData) {
 }
 
 // Detectar interacción con tarjetas usando pinch
-export function detectCardInteraction(indexTip, thumbTip, camera) {
-  const screenX = (1 - indexTip.x) * window.innerWidth;
+export function detectCardInteraction(indexTip, thumbTip, camera, isStartingPinch = false, dragDelta = null, isEndingPinch = false) {
+  const screenX = (1 - indexTip.x) * window.innerWidth; // Restaurar la inversión para coordenadas correctas
   const screenY = indexTip.y * window.innerHeight;
-  const pinchDist = Math.hypot(indexTip.x - thumbTip.x, indexTip.y - thumbTip.y);
-  const pinchThreshold = 0.045;
   
-  const isCurrentlyPinching = pinchDist < pinchThreshold;
+  // Si estamos terminando el pinch, soltar la tarjeta
+  if (isEndingPinch && draggedCard) {
+    draggedCard.userData.isDragging = false;
+    draggedCard = null;
+    return null;
+  }
   
-  // Verificar si el pinch está sobre alguna tarjeta
+  // Si hay movimiento de arrastre y tenemos una tarjeta seleccionada
+  if (dragDelta && draggedCard) {
+    // Convertir el delta de pantalla a movimiento 3D
+    const vector = new THREE.Vector3();
+    
+    // Proyectar la posición actual de la tarjeta
+    vector.copy(draggedCard.position);
+    vector.project(camera);
+    
+    // Aplicar el delta en coordenadas de pantalla - CORREGIR DIRECCIONES
+    vector.x -= dragDelta.deltaX * 2; // Cambiar a negativo para invertir dirección
+    vector.y -= dragDelta.deltaY * 2; // Mantener Y invertido
+    
+    // Convertir de vuelta a coordenadas 3D
+    vector.unproject(camera);
+    
+    // Actualizar posición de la tarjeta
+    draggedCard.position.copy(vector);
+    
+    return draggedCard;
+  }
+  
+  // Verificar interacción con tarjetas
+  let hoveredCard = null;
+  let minDistance = Infinity;
+  
   cardMeshes.forEach(card => {
     // Proyectar posición de la tarjeta a coordenadas de pantalla
     const projected = card.position.clone().project(camera);
@@ -225,43 +255,60 @@ export function detectCardInteraction(indexTip, thumbTip, camera) {
     // Calcular distancia del gesto a la tarjeta
     const dist = Math.hypot(screenX - cardX, screenY - cardY);
     
-    if (dist < 120) { // Radio de detección aumentado
-      if (isCurrentlyPinching) {
-        selectCard(card);
-      } else {
-        // Efecto hover más pronunciado
-        card.scale.set(1.15, 1.15, 1.15);
-        card.rotation.x = Math.sin(Date.now() * 0.005) * 0.1; // Animación sutil
-      }
-    } else {
-      // Restaurar escala y rotación normal
-      if (!card.userData.isSelected) {
-        card.scale.set(1, 1, 1);
-        card.rotation.x = 0;
-      }
+    if (dist < 120 && dist < minDistance) { // Radio de detección
+      minDistance = dist;
+      hoveredCard = card;
     }
   });
+  
+  // Resetear efectos de todas las tarjetas
+  cardMeshes.forEach(card => {
+    if (card !== hoveredCard && !card.userData.isDragging) {
+      card.scale.set(1, 1, 1);
+      card.rotation.x = 0;
+      card.children[0].material.opacity = 0.9;
+      card.children[0].material.emissive.setHex(0x000000);
+    }
+  });
+  
+  if (hoveredCard) {
+    if (isStartingPinch) {
+      // Iniciar arrastre
+      selectCard(hoveredCard);
+      draggedCard = hoveredCard;
+      hoveredCard.userData.isDragging = true;
+      console.log(`Iniciando arrastre de: ${hoveredCard.userData.title}`);
+      return hoveredCard;
+    } else if (!draggedCard) {
+      // Efecto hover
+      hoveredCard.scale.set(1.15, 1.15, 1.15);
+      hoveredCard.rotation.x = Math.sin(Date.now() * 0.005) * 0.1;
+    }
+  }
+  
+  return hoveredCard;
 }
 
 // Seleccionar una tarjeta con efectos 3D mejorados
 function selectCard(card) {
   // Deseleccionar tarjeta anterior
-  if (selectedCard) {
+  if (selectedCard && selectedCard !== card) {
     selectedCard.userData.isSelected = false;
     selectedCard.scale.set(1, 1, 1);
     selectedCard.rotation.x = 0;
     selectedCard.children[0].material.opacity = 0.9;
+    selectedCard.children[0].material.emissive.setHex(0x000000);
   }
   
   // Seleccionar nueva tarjeta con efectos más dramáticos
   selectedCard = card;
   card.userData.isSelected = true;
   card.scale.set(1.4, 1.4, 1.4);
-  card.rotation.x = 0.2; // Inclinación para efecto 3D
+  card.rotation.x = 0.2;
   card.children[0].material.opacity = 1.0;
   
   // Añadir efecto de resplandor
-  card.children[0].material.emissive.setHex(0x222222);
+  card.children[0].material.emissive.setHex(0x444444);
   
   console.log(`Tarjeta seleccionada: ${card.userData.title}`);
 }
