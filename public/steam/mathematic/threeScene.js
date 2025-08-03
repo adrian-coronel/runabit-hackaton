@@ -21,6 +21,9 @@ let robotIntegration = null;
 // Array para almacenar las etiquetas de medidas
 let measureLabels = [];
 
+// Variable para controlar el envío del callback solo cuando se agarra un vértice por primera vez
+let shouldSendVertexCallback = false;
+
 // Inicializa la escena Three.js
 function initThree() {
   scene = new THREE.Scene(); // Crea la escena
@@ -65,6 +68,11 @@ export function onShapeCreated(callback) {
   if (callback && typeof callback === 'function') {
     onShapeCreatedCallback = callback;
   }
+}
+
+// Función para activar el envío del callback cuando se agarra un vértice
+ function triggerVertexGrabbed() {
+  shouldSendVertexCallback = true;
 }
 
 // Función para cambiar la forma principal
@@ -298,9 +306,13 @@ function createShape() {
   //   robotIntegration.onShapeCreated(currentShape);
   // }
   
-  // Llamar callback si existe
-  if (onShapeCreatedCallback) {
-    onShapeCreatedCallback(currentShape);
+  // Llamar callback si existe y se debe enviar
+  if (onShapeCreatedCallback && shouldSendVertexCallback) {
+    // Enviar valor aleatorio entre 'B' y 'C' cuando se agarra un vértice
+    const randomValue = Math.random() < 0.5 ? 'B' : 'C';
+    onShapeCreatedCallback(randomValue);
+    // Reset de la bandera
+    shouldSendVertexCallback = false;
   }
 }
 
@@ -472,5 +484,6 @@ export {
   initThree,
   createShape,
   setMainShape,
-  updateMeasureLabels  // NUEVO: Exportar la función de actualización de medidas
+  updateMeasureLabels,  // NUEVO: Exportar la función de actualización de medidas
+  triggerVertexGrabbed   // NUEVO: Exportar la función para activar el callback
 };

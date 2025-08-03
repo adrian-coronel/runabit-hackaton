@@ -1,6 +1,6 @@
 // handGestures.js
 // Detección de gestos de mano y lógica de interacción con el cubo
-import { camera, cornerMarkers, createShape, setMainShape } from "./threeScene.js";
+import { camera, cornerMarkers, createShape, setMainShape, triggerVertexGrabbed } from "./threeScene.js";
 
 import { SHAPES } from "./sidebarShapes.js";
 
@@ -113,6 +113,8 @@ export function detectDrag(handLandmarks) {
   // Si no se está arrastrando ninguna esquina y se hace "pinch" sobre un marcador, comienza el arrastre
   if (draggingCornerIndex === -1 && isCurrentlyPinching && hoveringIndex !== -1) {
     draggingCornerIndex = hoveringIndex;
+    // Activar el callback solo cuando se agarra un vértice por primera vez
+    triggerVertexGrabbed();
   }
   // Si se está arrastrando una esquina y se mantiene el "pinch", actualiza la posición del marcador
   if (draggingCornerIndex !== -1 && isCurrentlyPinching) {

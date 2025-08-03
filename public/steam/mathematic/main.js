@@ -21,6 +21,12 @@ onShapeCreated((data) => {
   socket.emit("lenvantarceja", data);
 });
 
+// Enviar 'D' cuando el usuario sale de la página
+window.addEventListener('beforeunload', () => {
+  console.log("Saliendo de la página de matemáticas, enviando 'D'");
+  socket.emit("lenvantarceja", 'D');
+});
+
 // Función principal que inicializa todo
 async function main() {
   await initWebcam(videoElement); // Inicializa la webcam
