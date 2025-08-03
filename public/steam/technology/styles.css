@@ -1,0 +1,225 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+}
+
+#cesiumContainer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+}
+
+#webcam {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+    z-index: 0;
+    filter: grayscale(100%);
+}
+
+#canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(-1);
+    pointer-events: none;
+    z-index: 2;
+}
+
+#layerControls {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 3;
+    background: #ffffff;
+    border: 4px solid #000000;
+    padding: 0;
+    font-family: 'Courier New', monospace;
+    color: #000000;
+}
+
+#layerControls h3 {
+    margin: 0;
+    background: #000000;
+    color: #ffffff;
+    padding: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.layer-option {
+    display: block;
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.layer-option:hover {
+    background-color: #f0f0f0;
+}
+
+.layer-option.active {
+    background-color: #ffff00;
+}
+
+.layer-option input[type="radio"] {
+    margin-right: 5px;
+}
+
+#instructions {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 3;
+    background: #ffffff;
+    border: 4px solid #000000;
+    font-family: 'Courier New', monospace;
+    color: #000000;
+    max-width: 300px;
+}
+
+#instructions .header {
+    background: #000000;
+    color: #ffffff;
+    padding: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#instructions .content {
+    padding: 10px;
+}
+
+#instructions .section {
+    margin-bottom: 10px;
+}
+
+#instructions .control-item {
+    margin-bottom: 5px;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.text-box {
+    background: #ffffff;
+    border: 4px solid #000000;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    position: absolute;
+    z-index: 3;
+}
+
+#logo-container {
+    bottom: 5px;
+    left: 5px;
+}
+
+#logo {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+#logo-container a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 10px;
+}
+
+#logo-container a:hover {
+    text-decoration: underline;
+}
+
+#infoBox {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    z-index: 3;
+    background: #ffffff;
+    border: 4px solid #000000;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    color: #000000;
+    font-size: 12px;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+#infoBox img {
+    display: block;
+    margin: 0 auto 10px auto;
+    max-width: 100px;
+}
+
+#infoBox strong {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Optimización: Agregamos stats de rendimiento */
+#performance-stats {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff00;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    border: 2px solid #00ff00;
+    border-radius: 5px;
+}
+
+#performance-stats div {
+    margin-bottom: 5px;
+}
+
+/* Optimización: Reducir el número de transiciones para mejorar el rendimiento */
+* {
+    will-change: auto;
+}
+
+/* Optimización: Usar GPU acceleration para elementos que se mueven frecuentemente */
+#canvas, #webcam {
+    transform: translateZ(0) scaleX(-1);
+}
+
+/* Optimización: Ocultar elementos fuera de pantalla */
+.cesium-widget-credits {
+    display: none !important;
+}
+
+.cesium-viewer-bottom {
+    display: none !important;
+}
+
+/* Mejorar la visibilidad en dispositivos móviles */
+@media (max-width: 768px) {
+    #layerControls, #instructions {
+        font-size: 10px;
+    }
+    
+    #instructions {
+        max-width: 200px;
+    }
+    
+    .control-item {
+        font-size: 9px !important;
+    }
+}

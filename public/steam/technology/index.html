@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Planet Explorer - Optimizado</title>
+  <link rel="stylesheet" href="styles.css">
+  
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="Runabit">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://funwithcomputervision.com/planet-explorer/">
+  <meta property="og:title" content="Planet Explorer - Optimizado">
+  <meta property="og:description" content="Usa gestos de mano para explorar el mundo - versión optimizada">
+  <meta property="og:image" content="https://funwithcomputervision.com/assets/planet-explorer.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://funwithcomputervision.com/planet-explorer/">
+  <meta property="twitter:title" content="Planet Explorer - Optimizado">
+  <meta property="twitter:description" content="Usa gestos de mano para explorar el mundo - versión optimizada">
+  <meta property="twitter:image" content="https://funwithcomputervision.com/assets/planet-explorer.jpg">
+
+</head>
+<body>
+  <video id="webcam" autoplay playsinline></video>
+  <canvas id="canvas"></canvas>
+  <div id="cesiumContainer"></div>
+  
+  <div id="layerControls">
+    <h3>CAPAS DEL MAPA</h3>
+    <label class="layer-option active">
+      <input type="radio" name="layer" value="terrain" checked> TERRENO
+    </label>
+    <label class="layer-option">
+      <input type="radio" name="layer" value="streets"> CALLES
+    </label>
+    <label class="layer-option">
+      <input type="radio" name="layer" value="dark"> MODO OSCURO
+    </label>
+  </div>
+
+
+  <div id="infoBox" style="display: none;"></div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+  <script src="main.js"></script>
+</body>
+</html>
